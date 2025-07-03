@@ -11,7 +11,16 @@ const dishRoutes = require('./routes/dishes');
 
 const app = express();
 
-app.use(cors());
+// UPDATED CORS SETUP
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://mern-food-client.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Routes
@@ -20,6 +29,7 @@ app.use('/api', dishRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
+    // These options are now optional/deprecated, but no harm keeping for now
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
