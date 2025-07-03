@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -11,14 +10,15 @@ const dishRoutes = require('./routes/dishes');
 
 const app = express();
 
-// UPDATED CORS SETUP
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://mern-food-client.vercel.app"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://mern-food-client.vercel.app"
-  ],
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  credentials: true,
 }));
 
 app.use(express.json());
@@ -29,9 +29,8 @@ app.use('/api', dishRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
-    // These options are now optional/deprecated, but no harm keeping for now
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
 .then(() => console.log("MongoDB connected"))
 .catch((err) => console.error("MongoDB connection failed:", err));
