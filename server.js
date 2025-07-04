@@ -10,31 +10,28 @@ const dishRoutes = require('./routes/dishes');
 
 const app = express();
 
-const allowedOrigins = [
-    "http://localhost:3000",
-  "https://mern-food-client.vercel.app"
-  
-];
+// Debug: log every request (you can remove later for production)
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+  next();
+});
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+// === CORS: Start with 'allow all' for testing ===
+// Remove for production, restrict after debugging!
+app.use(cors());
 
+// Body parser
 app.use(express.json());
 
-// Routes
+// API routes
 app.use('/api', authRoutes);
 app.use('/api', dishRoutes);
+
+// Global error handler (shows any server-side errors)
+app.use((err, req, res, next) => {
+  console.error("GLOBAL ERROR:", err);
+  res.status(500).json({ error: err.message || "Internal Server Error" });
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
