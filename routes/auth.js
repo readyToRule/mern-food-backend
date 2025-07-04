@@ -8,4 +8,6 @@ router.post('/register', register);
 // POST /api/login
 router.post('/login', login);
 
+router.get('/test', (req, res) => res.json({ msg: "API Test Works" }));
+
 module.exports = router;
